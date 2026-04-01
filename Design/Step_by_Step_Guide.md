@@ -15,8 +15,15 @@
 | C-1~2 | BP_MonsterBasic 생성 + 변수 | **완료** |
 | C-3 | BP_MonsterBasic BeginPlay | **완료** (DetectionRange→AttackRange 중복 버그 수정 필요) |
 | C-4 | BP_MonsterBasic PerformAttack | **완료** |
-| C-5 | ANS_AttackCheck 몽타주 연결 | **다음 작업** ← 여기부터 |
-| D | 몬스터 AI 전체 | 미완 |
+| C-5 | ANS_AttackCheck 몽타주 연결 | **완료** |
+| D-1 | BB_Monster (Blackboard) | **완료** |
+| D-2 | BT_Monster (Behavior Tree) | **완료** |
+| D-3 | BT Task 4종 + BTTask_UpdateTargetLocation | **완료** |
+| D-4 | BT_Monster 트리 조립 | **완료** |
+| D-5 | AIC_Monster (AI Controller) | **다음 작업** ← 여기부터 |
+| D-6 | BP_MonsterBasic에 AI Controller 설정 | 미완 |
+| D-7 | ABP_Monster (적 애니메이션 블루프린트) | 미완 |
+| D-8 | NavMesh + 테스트 | 미완 |
 | E | 플레이어 스태미너/HP | 미완 |
 | F | UI (WBP_MainHUD) | 미완 |
 | G | 락온 시스템 | 미완 |
@@ -28,6 +35,12 @@
 - VariableSet_3과 VariableSet_4가 둘 다 AttackRange를 Set하고 있음
 - VariableSet_4는 DetectionRange 값을 AttackRange에 덮어쓰는 버그
 - **수정**: VariableSet_4 삭제 → VariableSet_3(AttackRange)의 then을 VariableSet_5(AttackCooldown)에 직접 연결
+
+### D-3 가이드 변경사항
+- BB_Monster에 **TargetLocation** (Vector) 키 추가
+- **BTTask_UpdateTargetLocation** 추가 생성 (TargetActor 위치 → TargetLocation 벡터로 변환)
+- 분기 2(Chase) MoveTo는 TargetActor(Object) 대신 **TargetLocation**(Vector) 사용
+- 원인: UE5 MoveTo 노드가 Object 타입 Blackboard Key를 지원하지 않음
 
 ---
 
@@ -371,7 +384,42 @@ On Target Perception Updated (Actor, Stimulus)
 
 ---
 
-### D-7. 테스트 준비
+### D-7. ABP_Monster (적 애니메이션 블루프린트)
+
+1. `Content/BluePrint/AI/` 에서 우클릭 → **Animation** → **Animation Blueprint**
+2. 스켈레톤 선택 (BP_MonsterBasic에서 사용하는 Skeleton)
+3. 이름: `ABP_Monster`
+
+#### AnimGraph 구성
+
+1. **State Machine** 추가 → 이름: `Locomotion`
+2. State Machine 안에서:
+   - **Idle** State: Idle 애니메이션
+   - **Walk** State: Walk 애니메이션
+   - Idle → Walk 전환 조건: Speed > 0
+   - Walk → Idle 전환 조건: Speed <= 0
+
+#### Event Graph에서 Speed 변수 업데이트
+
+```
+Event Blueprint Update Animation (DeltaTime)
+ │
+ ├─ Try Get Pawn Owner → Get Velocity → Vector Length → Set Speed
+```
+
+변수: `Speed` (Float)
+
+#### BP_MonsterBasic에 ABP 적용
+
+1. BP_MonsterBasic 열기
+2. Mesh(SkeletalMesh) 컴포넌트 선택
+3. Details → **Animation** → Anim Class: `ABP_Monster`
+
+**Compile → Save**
+
+---
+
+### D-8. 테스트 준비
 
 1. **NavMeshBoundsVolume** 배치 (필수!)
    - Place Actors → Volumes → Nav Mesh Bounds Volume
