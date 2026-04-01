@@ -1,0 +1,14 @@
+[
+    {
+        "Name": "2001",
+        "BossTid": 2001,
+        "MaxHP": 3000,
+        "Phase2HPThreshold": 0.5,
+        "MoveSpeed": 350,
+        "DetectionRange": 3000,
+        "DamageMultiplier_Head": 1.5,
+        "DamageMultiplier_Body": 1.0,
+        "DamageMultiplier_Arms": 0.8,
+        "DamageMultiplier_Legs": 0.7
+    }
+]

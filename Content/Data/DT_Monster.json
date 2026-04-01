@@ -1,0 +1,17 @@
+[
+    {
+        "Name": "1001",
+        "MonsterTid": 1001,
+        "NameTextTid": 9001
+    },
+    {
+        "Name": "1002",
+        "MonsterTid": 1002,
+        "NameTextTid": 9002
+    },
+    {
+        "Name": "1003",
+        "MonsterTid": 1003,
+        "NameTextTid": 9003
+    }
+]

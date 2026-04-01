@@ -1,0 +1,23 @@
+[
+    {
+        "Name": "11001",
+        "TextTid": 11001,
+        "Korean": "체력",
+        "KoreanSub": "",
+        "English": "HP"
+    },
+    {
+        "Name": "11002",
+        "TextTid": 11002,
+        "Korean": "스태미너",
+        "KoreanSub": "",
+        "English": "Stamina"
+    },
+    {
+        "Name": "11003",
+        "TextTid": 11003,
+        "Korean": "스태미너 부족",
+        "KoreanSub": "",
+        "English": "Not enough stamina"
+    }
+]

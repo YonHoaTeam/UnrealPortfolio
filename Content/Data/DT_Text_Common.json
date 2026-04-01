@@ -1,0 +1,79 @@
+[
+    {
+        "Name": "9001",
+        "TextTid": 9001,
+        "Korean": "그런트",
+        "KoreanSub": "",
+        "English": "Grunt"
+    },
+    {
+        "Name": "9002",
+        "TextTid": 9002,
+        "Korean": "브루트",
+        "KoreanSub": "",
+        "English": "Brute"
+    },
+    {
+        "Name": "9003",
+        "TextTid": 9003,
+        "Korean": "스카우트",
+        "KoreanSub": "",
+        "English": "Scout"
+    },
+    {
+        "Name": "9101",
+        "TextTid": 9101,
+        "Korean": "심연의 기사",
+        "KoreanSub": "",
+        "English": "Knight of the Abyss"
+    },
+    {
+        "Name": "9201",
+        "TextTid": 9201,
+        "Korean": "연속 베기",
+        "KoreanSub": "",
+        "English": "Slash Combo"
+    },
+    {
+        "Name": "9202",
+        "TextTid": 9202,
+        "Korean": "대지 강타",
+        "KoreanSub": "",
+        "English": "Ground Slam"
+    },
+    {
+        "Name": "9203",
+        "TextTid": 9203,
+        "Korean": "찌르기",
+        "KoreanSub": "",
+        "English": "Thrust"
+    },
+    {
+        "Name": "9204",
+        "TextTid": 9204,
+        "Korean": "도약 강습",
+        "KoreanSub": "",
+        "English": "Leap Strike"
+    },
+    {
+        "Name": "9205",
+        "TextTid": 9205,
+        "Korean": "회전 참격",
+        "KoreanSub": "",
+        "English": "Whirlwind"
+    },
+    {
+        "Name": "9206",
+        "TextTid": 9206,
+        "Korean": "암흑파",
+        "KoreanSub": "",
+        "English": "Dark Wave"
+    },
+    {
+        "Name": "9207",
+        "TextTid": 9207,
+        "Korean": "돌진",
+        "KoreanSub": "",
+        "English": "Charge"
+    }
+]

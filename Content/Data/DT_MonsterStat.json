@@ -1,0 +1,35 @@
+[
+    {
+        "Name": "1001",
+        "MonsterTid": 1001,
+        "MaxHP": 300,
+        "AttackDamage": 25,
+        "AttackRange": 200,
+        "DetectionRange": 1500,
+        "AttackCooldown": 2.0,
+        "MoveSpeed": 400,
+        "ExpReward": 100
+    },
+    {
+        "Name": "1002",
+        "MonsterTid": 1002,
+        "MaxHP": 500,
+        "AttackDamage": 40,
+        "AttackRange": 250,
+        "DetectionRange": 1200,
+        "AttackCooldown": 3.0,
+        "MoveSpeed": 300,
+        "ExpReward": 150
+    },
+    {
+        "Name": "1003",
+        "MonsterTid": 1003,
+        "MaxHP": 200,
+        "AttackDamage": 15,
+        "AttackRange": 180,
+        "DetectionRange": 2000,
+        "AttackCooldown": 1.5,
+        "MoveSpeed": 500,
+        "ExpReward": 80
+    }
+]
