@@ -20,12 +20,21 @@
 | D-2 | BT_Monster (Behavior Tree) | **완료** |
 | D-3 | BT Task 4종 + BTTask_UpdateTargetLocation | **완료** |
 | D-4 | BT_Monster 트리 조립 | **완료** |
-| D-5 | AIC_Monster (AI Controller) | **다음 작업** ← 여기부터 |
-| D-6 | BP_MonsterBasic에 AI Controller 설정 | 미완 |
-| D-7 | ABP_Monster (적 애니메이션 블루프린트) | 미완 |
-| D-8 | NavMesh + 테스트 | 미완 |
-| E | 플레이어 스태미너/HP | 미완 |
-| F | UI (WBP_MainHUD) | 미완 |
+| D-5 | AIC_Monster (AI Controller) | **완료** |
+| D-6 | BP_MonsterBasic에 AI Controller 설정 | **완료** |
+| D-7 | ABP_Monster (적 애니메이션 블루프린트) | **완료** (Default Slot 추가) |
+| D-8 | NavMesh + 테스트 | **완료** |
+| D-9 | BP_MonsterSpawner (몬스터 스폰 시스템) | **완료** |
+| E-1 | 플레이어 스태미너 (ConsumeStamina) | **완료** |
+| E-2 | 플레이어 HP (Event AnyDamage) | **완료** |
+| E-3 | 콤보 스태미너 연동 수정 | **완료** |
+| E-4 | 플레이어 히트박스 시스템 | **완료** |
+| E-5 | 적 히트박스 시스템 (BP_EnemyBase) | **완료** |
+| E-6 | ANS_AttackCheck 플레이어 지원 추가 | **완료** |
+| E-7 | 플레이어 몽타주 ANS_AttackCheck 부착 | **완료** |
+| E-8 | BP_EnemyBase Event AnyDamage | **완료** |
+| E-9 | BP_EnemyBase Die() 함수 수정 | **완료** |
+| F | UI (WBP_MainHUD) | **다음 작업** ← 여기부터 |
 | G | 락온 시스템 | 미완 |
 | H | 보스 (BP_BossEnemy + AI) | 미완 |
 | I | 게임 플로우 | 미완 |
@@ -296,7 +305,7 @@ Event Receive Execute AI (Owner Controller, Controlled Pawn)
      - Peripheral Vision Half Angle: `60`
      - **Detection by Affiliation:**
        - Detect Enemies: ✓
-       - Detect Neutrals: ✗
+       - Detect Neutrals: ✓ ← BP에서 Enemy만 설정 시 인지 안 되는 UE 버그 있음
        - Detect Friendlies: ✗
      - Auto Success Range from Last Seen Location: `500`
 
@@ -544,6 +553,122 @@ Event AnyDamage (Damage)
  │   ├─ True → (사망 처리: 게임 오버 UI 등)
  │   └─ False → (히트 리액션 몽타주 재생, 선택)
 ```
+
+---
+
+### 콤보 스태미너 수정사항 (E-3)
+
+기존 문제: IA_LightAttack Started에서 ConsumeStamina가 **무조건** 호출되어, 콤보 예약(bComboQueued)만 할 때도 스태미너가 빠짐
+
+수정 후 흐름:
+```
+IA_LightAttack Started
+ → Branch (IsAnyMontagePlaying?)
+   ├─ True (몽타주 재생 중) → Branch (bCanCombo?)
+   │   ├─ True → Set bComboQueued = true  ← 스태미너 안 빠짐
+   │   └─ False → 무시
+   └─ False (첫 공격)
+       → ConsumeStamina(LightAttackStaminaCost)  ← 여기서만 소모
+       → Branch → True → Set ComboIndex = 0 → Play Montage
+```
+※ 콤보가 실제 실행되는 곳에서도 ConsumeStamina 호출 필요
+
+---
+
+### 플레이어 히트박스 시스템 (E-4)
+
+#### BP_ToonCharacter 추가 변수
+| 이름 | 타입 | 기본값 |
+|------|------|--------|
+| `AttackDamage` | Float | `30` |
+| `HitActorThisSwing` | Array (Actor) | - |
+
+#### AttackHitbox 컴포넌트 설정
+- SphereCollision, Radius: 50~80
+- 기본 Collision: **No Collision** (공격 시에만 활성화)
+- Generate Overlap Events: ✅
+
+#### Function: OnAttackCheckStart
+```
+Entry → Array Clear(HitActorThisSwing) → AttackHitbox → Set Collision Enabled(Query Only)
+```
+
+#### Function: OnAttackCheckEnd
+```
+Entry → AttackHitbox → Set Collision Enabled(No Collision) → Array Clear(HitActorThisSwing)
+```
+
+#### Event: AttackHitbox → On Component Begin Overlap
+```
+On Component Begin Overlap (AttackHitbox)
+ ├─ Branch (Other Actor == Self) → True: 끝
+ ├─ HitActorThisSwing → Contains(Other Actor) → True: 끝
+ ├─ HitActorThisSwing → Add(Other Actor)
+ └─ Apply Damage (Damaged Actor: Other Actor, Base Damage: AttackDamage,
+     Event Instigator: Get Controller, Damage Causer: Self)
+```
+
+---
+
+### ANS_AttackCheck 수정 (E-6)
+
+BP_EnemyBase + BP_ToonCharacter 양쪽 모두 지원하도록 수정:
+
+```
+Received_NotifyBegin
+ ├─ MeshComp → Get Owner
+ ├─ Cast to BP_EnemyBase → 성공 → OnAttackCheckStart() → Return true
+ └─ Cast to BP_ToonCharacter → 성공 → OnAttackCheckStart() → Return true
+     실패 → Return false
+
+Received_NotifyEnd (동일 구조, OnAttackCheckEnd 호출)
+```
+
+---
+
+### BP_EnemyBase Event AnyDamage (E-8)
+
+```
+Event AnyDamage (Damage)
+ ├─ Branch (bIsDead) → True: 끝
+ ├─ Clamp(CurrentHP - Damage, 0, MaxHP) → Set CurrentHP
+ ├─ Branch (CurrentHP <= 0)
+ │   ├─ True → Die()
+ │   └─ False → Play Montage(AM_EnemyHitReact)
+```
+
+---
+
+### BP_EnemyBase Die() 수정 (E-9)
+
+```
+Die()
+ ├─ Set bIsDead = true
+ ├─ GetAIController(Self) → GetBlackboard → Set Value as Enum (State = Dead)
+ │   ※ GetAIController의 ControlledActor에 Self 연결 필수
+ │   ※ State 로컬변수 기본값: "State" (None 아님)
+ ├─ CapsuleComponent → Set Collision Enabled (No Collision)
+ ├─ Play Anim Montage (AM_EnemyDie)
+ ├─ Get GameMode → Cast to BP_GameMode → OnEnemyKilled(Self)
+ ├─ Set Timer (3초, Delegate: DelayedDestroy)
+```
+
+---
+
+### 기타 수정사항
+
+- **ABP_Monster**: BlendSpacePlayer → **Default Slot** → Output Pose (몽타주 재생 필수)
+- **BP_MonsterBasic PerformAttack**: bCanAttack 기본값 **true**, PlayAnimMontage Target에 **Self** 연결
+- **적 카메라 충돌 방지**: BP_EnemyBase CapsuleComponent → Camera 채널 **Ignore**
+- **Outline SkeletalMesh 동기화**: BeginPlay에서 `Set Leader Pose Component` (메인 메시 지정)
+
+---
+
+### 미해결 이슈
+
+- **BT Patrol 중 Chase 전환 지연**: Decorator는 Both로 설정되어 있으나, Patrol MoveTo 중 즉시 중단되지 않는 현상. AIPerception 감지 타이밍 또는 BT 관련 추가 조사 필요.
+- **강공격 개별 데미지**: HeavyAttack 1~3 각각 다른 데미지 적용 (미구현)
+- **AttackDamage DataTable 연동**: DT_PlayerStat에서 AttackDamage 로드 (미구현)
 
 ---
 
