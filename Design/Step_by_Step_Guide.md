@@ -34,11 +34,22 @@
 | E-7 | 플레이어 몽타주 ANS_AttackCheck 부착 | **완료** |
 | E-8 | BP_EnemyBase Event AnyDamage | **완료** |
 | E-9 | BP_EnemyBase Die() 함수 수정 | **완료** |
-| F | UI (WBP_MainHUD) | **다음 작업** ← 여기부터 |
-| G | 락온 시스템 | 미완 |
-| H | 보스 (BP_BossEnemy + AI) | 미완 |
-| I | 게임 플로우 | 미완 |
-| J | 미니맵 | 미완 |
+| F | UI (WBP_MainHUD) | 미완 |
+| G-1 | IA_Sprint 생성 | **완료** |
+| G-2 | IMC_Game 매핑 변경 (LockOn→Ctrl, Dodge→Alt, Sprint→Shift) | **완료** |
+| G-3 | BP_ToonCharacter 달리기 (Sprint) | **완료** (스태미너 소모 없이, WalkSpeed=300, SprintSpeed=800) |
+| G-4 | BP_ToonCharacter 락온 변수 추가 | **완료** |
+| G-5 | WBP_LockOnMarker 위젯 생성 | **완료** |
+| G-6 | EnableLockOn / DisableLockOn 함수 | **완료** |
+| G-7 | IA_LockOn 이벤트 연결 | **완료** |
+| G-8 | Event Tick 락온 카메라 + UI 추적 | **완료** (Pitch 자유, 마우스 큰 입력 시 해제, 거리/사망 자동 해제) |
+| G-9 | 플레이어 사망 시스템 | **완료** (bIsDead, ABP Dead 상태, DisableInput, WBP_GameOver) |
+| G-10 | 피격 시 적 즉시 인지 (BB State→Chase + TargetLocation 세팅) | **완료** |
+| G-11 | ABP BlendSpace 속도 조정 | **완료** |
+| H-next | 강공격 넉백 + 이펙트 | 미완 (가이드 작성 완료: Phase_H_HeavyAttack_Knockback_Guide.md) |
+| I | 보스 (BP_BossEnemy + AI) | 미완 |
+| J | 게임 플로우 | 미완 |
+| K | 미니맵 | 미완 |
 
 ### C-3 수정 필요 사항
 - VariableSet_3과 VariableSet_4가 둘 다 AttackRange를 Set하고 있음
