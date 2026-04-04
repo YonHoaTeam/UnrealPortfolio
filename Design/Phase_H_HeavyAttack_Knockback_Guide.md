@@ -6,14 +6,14 @@
 
 | 단계 | 작업 | 상태 |
 |------|------|------|
-| H-1 | DT_HeavyAttack Damage Type 생성 | ☐ |
-| H-2 | 강공격 Apply Damage에 DT_HeavyAttack 적용 | ☐ |
-| H-3 | 피격 이펙트 준비 (Niagara/Cascade) | ☐ |
-| H-4 | BP_EnemyBase Event AnyDamage 수정 (강공격 분기) | ☐ |
-| H-5 | 넉백 처리 (Launch Character) | ☐ |
-| H-6 | 이펙트 Spawn | ☐ |
-| H-7 | 카메라 쉐이크 (선택) | ☐ |
-| H-8 | 테스트 | ☐ |
+| H-1 | DT_HeavyAttack Damage Type 생성 (BP_DamageHeavy) | ✅ |
+| H-2 | 강공격 Apply Damage에 BP_DamageHeavy 적용 (Select Class + bIsHeavyAttack) | ✅ |
+| H-3 | 피격 이펙트 준비 (Niagara System) | ✅ |
+| H-4 | BP_EnemyBase Event AnyDamage 수정 (강공격 분기) | ✅ |
+| H-5 | 넉백 처리 (Launch Character) - BP_ToonCharacter에서 처리 | ✅ |
+| H-6 | 이펙트 Spawn - BP_EnemyBase Event AnyDamage에서 강/약 공통 | ✅ |
+| H-7 | 카메라 쉐이크 (PerlinNoise, 강공격만) | ✅ |
+| H-8 | 테스트 | ✅ |
 
 ---
 
